@@ -287,7 +287,7 @@ for n_samples in samples:
             if n_samples == 1:
                 bm_ids_modified = [
                     sid for sid in bm_sample_ids
-                    if sid not in ["16-00351", "16-00292", "16-00113", "15-00858", "15-00688"]
+                    if sid not in ["AML23", "AML40", "AML72", "AML88", "AML91"]
                 ]
             else:
                 bm_ids_modified = bm_sample_ids

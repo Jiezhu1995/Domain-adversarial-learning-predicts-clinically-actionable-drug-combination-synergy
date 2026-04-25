@@ -37,14 +37,14 @@ from keras.layers import Dense, Dropout, LeakyReLU, Softmax
 
 from tensorflow.keras.models import load_model
 # Load the saved patient model
-cell_line_model = load_model('./Data/Cell line/cell_line_model_based on blood_less neuron.h5')
+cell_line_model = load_model('/data/Cell line/cell_line_model_based on blood_less neuron.h5')
 # Load training data
-with h5py.File('./Data/Cell line/training_data_blood.h5', 'r') as f:
+with h5py.File('/data/Cell line/training_data_blood.h5', 'r') as f:
     X_train = f['X_train'][:]
     y_train = f['y_train'][:]
 
 # Load test data
-with h5py.File('./Data/Cell line/test_data_blood.h5', 'r') as f:
+with h5py.File('/data/Cell line/test_data_blood.h5', 'r') as f:
     X_test = f['X_test'][:]
     y_test = f['y_test'][:]
     # Create scaler object
@@ -56,12 +56,12 @@ X_test_scaled = scaler.transform(X_test)
 
 
 # PB data
-rowDrug_MACCS_patient_PB = pd.read_csv("./Data/PB/rowDrug_MACCS_input_PB.csv", sep = ",")
-rowDrug_Sig_patient_PB = pd.read_csv("./Data/PB/rowDrug_Sig_input_PB.csv", sep = ",")
-colDrug_MACCS_patient_PB = pd.read_csv("./Data/PB/colDrug_MACCS_input_PB.csv", sep = ",")
-colDrug_Sig_patient_PB = pd.read_csv("./Data/PB/colDrug_Sig_input_PB.csv", sep = ",")
-CellExp_patient_PB = pd.read_csv("./Data/PB/cellExp_ssGSEA_input_PB_1221.csv", sep = ",")
-HSA_label_patient_PB = pd.read_csv("./Data/PB/HSA_label_PB.csv", sep = ",")
+rowDrug_MACCS_patient_PB = pd.read_csv("/data/PB/rowDrug_MACCS_input_PB.csv", sep = ",")
+rowDrug_Sig_patient_PB = pd.read_csv("/data/PB/rowDrug_Sig_input_PB.csv", sep = ",")
+colDrug_MACCS_patient_PB = pd.read_csv("/data/PB/colDrug_MACCS_input_PB.csv", sep = ",")
+colDrug_Sig_patient_PB = pd.read_csv("/data/PB/colDrug_Sig_input_PB.csv", sep = ",")
+CellExp_patient_PB = pd.read_csv("/data/PB/cellExp_ssGSEA_input_PB_1221.csv", sep = ",")
+HSA_label_patient_PB = pd.read_csv("/data/PB/HSA_label_PB.csv", sep = ",")
 
 
 # PB data processing
@@ -72,12 +72,12 @@ X_patient_PB = new_data_patient_PB.drop("synergy_hsa", axis = 1).values
 y_patient_PB = new_data_patient_PB.synergy_hsa.astype(float)
 
 ####BM data
-rowDrug_MACCS_patient_BM = pd.read_csv("./Data/BM/rowDrug_MACCS_input_BM.csv", sep = ",")
-rowDrug_Sig_patient_BM = pd.read_csv("./Data/BM/rowDrug_Sig_input_BM.csv", sep = ",")
-colDrug_MACCS_patient_BM = pd.read_csv("./Data/BM/colDrug_MACCS_input_BM.csv", sep = ",")
-colDrug_Sig_patient_BM = pd.read_csv("./Data/BM/colDrug_Sig_input_BM.csv", sep = ",")
-CellExp_patient_BM = pd.read_csv("./Data/BM/cellExp_ssGSEA_input_BM_1221.csv", sep = ",")
-HSA_label_patient_BM = pd.read_csv("./Data/BM/HSA_label_BM.csv", sep = ",")
+rowDrug_MACCS_patient_BM = pd.read_csv("/data/BM/rowDrug_MACCS_input_BM.csv", sep = ",")
+rowDrug_Sig_patient_BM = pd.read_csv("/data/BM/rowDrug_Sig_input_BM.csv", sep = ",")
+colDrug_MACCS_patient_BM = pd.read_csv("/data/BM/colDrug_MACCS_input_BM.csv", sep = ",")
+colDrug_Sig_patient_BM = pd.read_csv("/data/BM/colDrug_Sig_input_BM.csv", sep = ",")
+CellExp_patient_BM = pd.read_csv("/data/BM/cellExp_ssGSEA_input_BM_1221.csv", sep = ",")
+HSA_label_patient_BM = pd.read_csv("/data/BM/HSA_label_BM.csv", sep = ",")
 input__patient_BM=pd.concat([rowDrug_MACCS_patient_BM,rowDrug_Sig_patient_BM,colDrug_MACCS_patient_BM,colDrug_Sig_patient_BM,CellExp_patient_BM,HSA_label_patient_BM],axis=1,join="inner") 
 input_patient_BM_final=input__patient_BM.drop(labels = ['drug_row',"block_id","drug_col"], axis=1)
 new_data_patient_BM=input_patient_BM_final

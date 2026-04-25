@@ -36,15 +36,15 @@ from keras.layers import Dense, Dropout, LeakyReLU, Softmax
 from tensorflow.keras.models import load_model
 
 # Load the saved patient model
-cell_line_model = load_model('./Data/Cell line/cell_line_model_based on blood_less neuron.h5')
+cell_line_model = load_model('/data/Cell line/cell_line_model_based on blood_less neuron.h5')
 
 # Load training data
-with h5py.File('./Data/Cell line/training_data_blood.h5', 'r') as f:
+with h5py.File('/data/Cell line/training_data_blood.h5', 'r') as f:
     X_train = f['X_train'][:]
     y_train = f['y_train'][:]
 
 # Load test data
-with h5py.File('./Data/Cell line/test_data_blood.h5', 'r') as f:
+with h5py.File('/data/Cell line/test_data_blood.h5', 'r') as f:
     X_test = f['X_test'][:]
     y_test = f['y_test'][:]
 
@@ -55,12 +55,12 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 print (X_train_scaled.shape[1])
-rowDrug_MACCS_patient_CLL = pd.read_csv("./Data/CLL/rowDrug_MACCS_input.csv", sep = ",")
-rowDrug_Sig_patient_CLL = pd.read_csv("./Data/CLL/rowDrug_Sig_input.csv", sep = ",")
-colDrug_MACCS_patient_CLL = pd.read_csv("./Data/CLL/colDrug_MACCS_input.csv", sep = ",")
-colDrug_Sig_patient_CLL = pd.read_csv("./Data/CLL/colDrug_Sig_input.csv", sep = ",")
-CellExp_patient_CLL = pd.read_csv("./Data/CLL/cellExp_input.csv", sep = ",")
-HSA_label_patient_CLL = pd.read_csv("./Data/CLL/HSA_label.csv", sep = ",")
+rowDrug_MACCS_patient_CLL = pd.read_csv("/data/CLL/rowDrug_MACCS_input.csv", sep = ",")
+rowDrug_Sig_patient_CLL = pd.read_csv("/data/CLL/rowDrug_Sig_input.csv", sep = ",")
+colDrug_MACCS_patient_CLL = pd.read_csv("/data/CLL/colDrug_MACCS_input.csv", sep = ",")
+colDrug_Sig_patient_CLL = pd.read_csv("/data/CLL/colDrug_Sig_input.csv", sep = ",")
+CellExp_patient_CLL = pd.read_csv("/data/CLL/cellExp_input.csv", sep = ",")
+HSA_label_patient_CLL = pd.read_csv("/data/CLL/HSA_label.csv", sep = ",")
 
 input__patient_CLL=pd.concat([rowDrug_MACCS_patient_CLL,rowDrug_Sig_patient_CLL,colDrug_MACCS_patient_CLL,colDrug_Sig_patient_CLL,CellExp_patient_CLL,HSA_label_patient_CLL],axis=1,join="inner") 
 input_patient_CLL_final=input__patient_CLL.drop(labels = ['drug_row',"block_id","drug_col"], axis=1)

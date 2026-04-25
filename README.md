@@ -22,7 +22,7 @@ For the raw data used on this study are avaiable from the following resources:
   LINCS_cell_line_transcriptomic_responses_source  
 
 - **Cell line drug combination data (DrugComb)** 
-  Cell_line_drug_combination_data_source  
+  Cell_line_drug_combination_data_source
 
 
 ## Usage
@@ -41,11 +41,12 @@ data/
 ### 2. Model training
 Run the following scripts to train the DANN model and the error prediction model:
 
-```bash
 python Beat_DANN_error_prediction_model.py   # for AML (BeatAML dataset), including the DANN model and error prediction model
 python CLL_DANN_error_prediction_model.py    # for CLL dataset, inclduing the DANN model and error prediction model
 
-## Ablation study
-To perform ablation analysis, run:
-python Ablation.py
+### 3. Ablation study
+To perform ablation analysis, run: python Ablation.py
 
+## ⚠️ Attention 
+Please ensure that all file paths specified in the `.py` scripts match your local directory structure.
+Failure to correctly set file paths may result in file-not-found errors or incorrect data loading.

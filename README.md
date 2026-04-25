@@ -42,8 +42,8 @@ data/
 Run the following scripts to train the DANN model and the error prediction model:
 
 ```bash
-python Beat_DANN_error_prediction_model.py   # for AML (BeatAML dataset)
-python CLL_DANN_error_prediction_model.py    # for CLL dataset
+python Beat_DANN_error_prediction_model.py   # for AML (BeatAML dataset), including the DANN model and error prediction model
+python CLL_DANN_error_prediction_model.py    # for CLL dataset, inclduing the DANN model and error prediction model
 
 ## Ablation study
 To perform ablation analysis, run:

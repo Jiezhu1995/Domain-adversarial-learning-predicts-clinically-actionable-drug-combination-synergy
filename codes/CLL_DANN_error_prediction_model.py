@@ -36,15 +36,15 @@ from keras.layers import Dense, Dropout, LeakyReLU, Softmax
 from tensorflow.keras.models import load_model
 
 # Load the saved patient model
-cell_line_model = load_model('cell_line_model_based on blood_less neuron.h5')
+cell_line_model = load_model('./Data/Cell line/cell_line_model_based on blood_less neuron.h5')
 
 # Load training data
-with h5py.File('training_data_blood.h5', 'r') as f:
+with h5py.File('./Data/Cell line/training_data_blood.h5', 'r') as f:
     X_train = f['X_train'][:]
     y_train = f['y_train'][:]
 
 # Load test data
-with h5py.File('test_data_blood.h5', 'r') as f:
+with h5py.File('./Data/Cell line/test_data_blood.h5', 'r') as f:
     X_test = f['X_test'][:]
     y_test = f['y_test'][:]
 
@@ -55,12 +55,12 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 print (X_train_scaled.shape[1])
-rowDrug_MACCS_patient_CLL = pd.read_csv("rowDrug_MACCS_input.csv", sep = ",")
-rowDrug_Sig_patient_CLL = pd.read_csv("rowDrug_Sig_input.csv", sep = ",")
-colDrug_MACCS_patient_CLL = pd.read_csv("colDrug_MACCS_input.csv", sep = ",")
-colDrug_Sig_patient_CLL = pd.read_csv("colDrug_Sig_input.csv", sep = ",")
-CellExp_patient_CLL = pd.read_csv("cellExp_input.csv", sep = ",")
-HSA_label_patient_CLL = pd.read_csv("HSA_label.csv", sep = ",")
+rowDrug_MACCS_patient_CLL = pd.read_csv("./Data/CLL/rowDrug_MACCS_input.csv", sep = ",")
+rowDrug_Sig_patient_CLL = pd.read_csv("./Data/CLL/rowDrug_Sig_input.csv", sep = ",")
+colDrug_MACCS_patient_CLL = pd.read_csv("./Data/CLL/colDrug_MACCS_input.csv", sep = ",")
+colDrug_Sig_patient_CLL = pd.read_csv("./Data/CLL/colDrug_Sig_input.csv", sep = ",")
+CellExp_patient_CLL = pd.read_csv("./Data/CLL/cellExp_input.csv", sep = ",")
+HSA_label_patient_CLL = pd.read_csv("./Data/CLL/HSA_label.csv", sep = ",")
 
 input__patient_CLL=pd.concat([rowDrug_MACCS_patient_CLL,rowDrug_Sig_patient_CLL,colDrug_MACCS_patient_CLL,colDrug_Sig_patient_CLL,CellExp_patient_CLL,HSA_label_patient_CLL],axis=1,join="inner") 
 input_patient_CLL_final=input__patient_CLL.drop(labels = ['drug_row',"block_id","drug_col"], axis=1)
@@ -70,7 +70,7 @@ df=input__patient_CLL
 input__patient_CLL=pd.concat([rowDrug_MACCS_patient_CLL,rowDrug_Sig_patient_CLL,colDrug_MACCS_patient_CLL,colDrug_Sig_patient_CLL,CellExp_patient_CLL,HSA_label_patient_CLL],axis=1,join="inner") 
 
 df=input__patient_CLL
-df.to_csv('CLL_input_index.csv', index=True)
+
 
 # # DANN model
 import random
@@ -209,8 +209,8 @@ unique_combinations = {}
 id_col = "SampleID"
 label_col = "HSA_score"
 
-train_data = pd.read_csv("training_20.csv")
-test_data  = pd.read_csv("test_another.csv")
+train_data = pd.read_csv("./Data/CLL/training_20.csv")
+test_data  = pd.read_csv("./Data/CLL/test_another.csv")
 
 # 合并成一个总表（所有样本）
 all_data = pd.concat([train_data, test_data], ignore_index=True)
@@ -520,24 +520,45 @@ for n_samples in samples:
         mse_scores[model] = []    
     for model in pearson_coeffs:
         pearson_coeffs[model] = []
+# Plot the average correlation coefficients for BM
+plt.figure()
+for model, scores in avg_corr_coeffs.items():
+    if '_CLL' in model:
+        x = list(scores.keys())
+        y = list(scores.values())
+        plt.plot(x, y, label=model)
 
+plt.xlabel('Number of samples')
+plt.ylabel('Average Correlation Coefficient (CLL)')
+plt.legend()
 
-# In[406]:
+# Save the plot as a high-quality PDF
+plt.savefig('avg_corr_coeff_plot_CLL_5times_blood.pdf', dpi=900, format='pdf')
+plt.show()
 
-
+##save the model
 DANN.save("DANN_50_samples_CLL.keras")
+##save the summry files
+def write_all_results_to_csv(file_name, results_dict):
+    with open(file_name, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        header = ['n_samples'] + list(results_dict.keys())
+        csv_writer.writerow(header)
 
+        for n_samples in results_dict[next(iter(results_dict))].keys():
+            for i, scores in enumerate(zip(*[results_dict[model][n_samples] for model in results_dict])):
+                row = [n_samples] + list(scores)
+                csv_writer.writerow(row)
+
+# Write all R2 scores, correlation coefficients, and MSEs to separate CSV files
+write_all_results_to_csv('all_r2_scores_5times_CLL_blood.csv', all_r2_scores)
+write_all_results_to_csv('all_corr_coeffs_5times_CLL_blood.csv', all_corr_coeffs)
+write_all_results_to_csv('all_mse_scores_5times_CLL_blood.csv', all_mse_scores)
+write_all_results_to_csv('all_pearson_coeffs_5times_CLL_blood.csv', all_pearson_coeffs)
 
 # ###Error prediction model
 
-# In[8]:
-
-
-test_data = pd.read_csv('CLL_test_remaining_samples.csv')
-
-
-# In[408]:
-
+test_data = pd.read_csv('./Data/CLL/CLL_test_remaining_samples.csv')
 
 import matplotlib.pyplot as plt
 import numpy as np

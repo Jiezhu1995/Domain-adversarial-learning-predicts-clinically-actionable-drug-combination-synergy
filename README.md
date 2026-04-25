@@ -12,6 +12,19 @@ The dataset includes:
 - Drug features (LINCS L1000 + chemical fingerprints)
 - Synergy score (HSA synerygy score including BM, PB and CLL)
 
+For the raw data used on this study are avaiable from the following resources:
+- Patient drug combination data (AML & CLL): AML_CLL_patient_RNA-seq_data_source    
+
+- Patient RNA-seq data (AML & CLL) 
+  Obtained from previously published studies: AML_CLL_patient_RNA-seq_data_source  
+
+- Cell line transcriptomic responses (LINCS L1000)
+  LINCS_cell_line_transcriptomic_responses_source  
+
+- Cell line drug combination data (DrugComb) 
+  Cell_line_drug_combination_data_source  
+
+
 ##Usage
 
 1. Data preparation

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 from sklearn.datasets import make_regression
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -38,16 +35,8 @@ from keras.datasets import mnist
 from keras.layers import Dense, Dropout, LeakyReLU, Softmax
 from tensorflow.keras.models import load_model
 
-
-# In[2]:
-
-
 # Load the saved patient model
 cell_line_model = load_model('cell_line_model_based on blood_less neuron.h5')
-
-
-# In[3]:
-
 
 # Load training data
 with h5py.File('training_data_blood.h5', 'r') as f:
@@ -59,27 +48,13 @@ with h5py.File('test_data_blood.h5', 'r') as f:
     X_test = f['X_test'][:]
     y_test = f['y_test'][:]
 
-
-# In[4]:
-
-
 # Create scaler object
 scaler = StandardScaler()
 
 # Fit scaler to training data and transform it
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
-
-# In[5]:
-
-
 print (X_train_scaled.shape[1])
-
-
-# In[6]:
-
-
 rowDrug_MACCS_patient_CLL = pd.read_csv("rowDrug_MACCS_input.csv", sep = ",")
 rowDrug_Sig_patient_CLL = pd.read_csv("rowDrug_Sig_input.csv", sep = ",")
 colDrug_MACCS_patient_CLL = pd.read_csv("colDrug_MACCS_input.csv", sep = ",")
@@ -87,34 +62,17 @@ colDrug_Sig_patient_CLL = pd.read_csv("colDrug_Sig_input.csv", sep = ",")
 CellExp_patient_CLL = pd.read_csv("cellExp_input.csv", sep = ",")
 HSA_label_patient_CLL = pd.read_csv("HSA_label.csv", sep = ",")
 
-
-# In[62]:
-
-
 input__patient_CLL=pd.concat([rowDrug_MACCS_patient_CLL,rowDrug_Sig_patient_CLL,colDrug_MACCS_patient_CLL,colDrug_Sig_patient_CLL,CellExp_patient_CLL,HSA_label_patient_CLL],axis=1,join="inner") 
 input_patient_CLL_final=input__patient_CLL.drop(labels = ['drug_row',"block_id","drug_col"], axis=1)
 new_data_patient_CLL=input_patient_CLL_final
 df=input__patient_CLL
-
-
-
-
-# In[48]:
-
 
 input__patient_CLL=pd.concat([rowDrug_MACCS_patient_CLL,rowDrug_Sig_patient_CLL,colDrug_MACCS_patient_CLL,colDrug_Sig_patient_CLL,CellExp_patient_CLL,HSA_label_patient_CLL],axis=1,join="inner") 
 
 df=input__patient_CLL
 df.to_csv('CLL_input_index.csv', index=True)
 
-
-
-
 # # DANN model
-
-# In[391]:
-
-
 import random
 # Gradient Reversal Layer
 seeds=281200696
@@ -172,11 +130,6 @@ def task_specific(input_shape):
         Dense(1, activation='linear')
     ])
 
-
-
-# In[392]:
-
-
 # Remove the last layer of the cell line model to create a feature extractor
 feature_extractor = Model(inputs=cell_line_model.input, outputs=cell_line_model.layers[-1].output)
 feature_extractor.trainable = True
@@ -209,10 +162,6 @@ transfer_model = build_and_compile_model()
 # Save the initial weights
 initial_weights = transfer_model.get_weights()
 
-
-# In[393]:
-
-
 from tensorflow.keras.callbacks import Callback
 
 class DomainWeightScheduler(Callback):
@@ -228,10 +177,6 @@ class DomainWeightScheduler(Callback):
         lam = self.max_lambda * (2. / (1. + np.exp(-10 * p)) - 1)
         # 动态修改模型的 loss_weights： [task_loss_weight, domain_loss_weight]
         self.model.loss_weights = [1.0, lam]
-
-
-# In[396]:
-
 
 samples = [1,2, 3, 4, 5, 6, 7, 8, 9, 10,12,14,16,18,20,30,40,50]
 repeat = 5
@@ -276,14 +221,8 @@ all_sample_ids = all_data[id_col].unique()
 print("Total unique samples:", len(all_sample_ids))
 
 
-# In[397]:
-
-
 from sklearn.linear_model import Ridge
 import numpy as np
-
-
-# In[398]:
 
 
 all_data = pd.concat([train_data, test_data], ignore_index=True)

@@ -20,10 +20,10 @@ https://zenodo.org/records/19749487
 
 Unzip and place the data into the following directory structure:
 data/
-Cell_line/
-BM/
-PB/
-CLL/
+├── Cell_line/
+├── BM/
+├── PB/
+├── CLL/
 
 2. Model training
 Run the following scripts to train the DANN model and the error prediction model:

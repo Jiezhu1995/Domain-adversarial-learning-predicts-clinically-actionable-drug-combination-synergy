@@ -37,14 +37,14 @@ from keras.layers import Dense, Dropout, LeakyReLU, Softmax
 
 from tensorflow.keras.models import load_model
 # Load the saved patient model
-cell_line_model = load_model('cell_line_model_based on blood_less neuron.h5')
+cell_line_model = load_model('./Data/Cell line/cell_line_model_based on blood_less neuron.h5')
 # Load training data
-with h5py.File('training_data_blood.h5', 'r') as f:
+with h5py.File('./Data/Cell line/training_data_blood.h5', 'r') as f:
     X_train = f['X_train'][:]
     y_train = f['y_train'][:]
 
 # Load test data
-with h5py.File('test_data_blood.h5', 'r') as f:
+with h5py.File('./Data/Cell line/test_data_blood.h5', 'r') as f:
     X_test = f['X_test'][:]
     y_test = f['y_test'][:]
     # Create scaler object
@@ -56,12 +56,12 @@ X_test_scaled = scaler.transform(X_test)
 
 
 # PB data
-rowDrug_MACCS_patient_PB = pd.read_csv("rowDrug_MACCS_input_PB.csv", sep = ",")
-rowDrug_Sig_patient_PB = pd.read_csv("rowDrug_Sig_input_PB.csv", sep = ",")
-colDrug_MACCS_patient_PB = pd.read_csv("colDrug_MACCS_input_PB.csv", sep = ",")
-colDrug_Sig_patient_PB = pd.read_csv("colDrug_Sig_input_PB.csv", sep = ",")
-CellExp_patient_PB = pd.read_csv("cellExp_ssGSEA_input_PB_1221.csv", sep = ",")
-HSA_label_patient_PB = pd.read_csv("HSA_label_PB.csv", sep = ",")
+rowDrug_MACCS_patient_PB = pd.read_csv("./Data/PB/rowDrug_MACCS_input_PB.csv", sep = ",")
+rowDrug_Sig_patient_PB = pd.read_csv("./Data/PB/rowDrug_Sig_input_PB.csv", sep = ",")
+colDrug_MACCS_patient_PB = pd.read_csv("./Data/PB/colDrug_MACCS_input_PB.csv", sep = ",")
+colDrug_Sig_patient_PB = pd.read_csv("./Data/PB/colDrug_Sig_input_PB.csv", sep = ",")
+CellExp_patient_PB = pd.read_csv("./Data/PB/cellExp_ssGSEA_input_PB_1221.csv", sep = ",")
+HSA_label_patient_PB = pd.read_csv("./Data/PB/HSA_label_PB.csv", sep = ",")
 
 
 # PB data processing
@@ -72,12 +72,12 @@ X_patient_PB = new_data_patient_PB.drop("synergy_hsa", axis = 1).values
 y_patient_PB = new_data_patient_PB.synergy_hsa.astype(float)
 
 ####BM data
-rowDrug_MACCS_patient_BM = pd.read_csv("rowDrug_MACCS_input_BM.csv", sep = ",")
-rowDrug_Sig_patient_BM = pd.read_csv("rowDrug_Sig_input_BM.csv", sep = ",")
-colDrug_MACCS_patient_BM = pd.read_csv("colDrug_MACCS_input_BM.csv", sep = ",")
-colDrug_Sig_patient_BM = pd.read_csv("colDrug_Sig_input_BM.csv", sep = ",")
-CellExp_patient_BM = pd.read_csv("cellExp_ssGSEA_input_BM_1221.csv", sep = ",")
-HSA_label_patient_BM = pd.read_csv("HSA_label_BM.csv", sep = ",")
+rowDrug_MACCS_patient_BM = pd.read_csv("./Data/BM/rowDrug_MACCS_input_BM.csv", sep = ",")
+rowDrug_Sig_patient_BM = pd.read_csv("./Data/BM/rowDrug_Sig_input_BM.csv", sep = ",")
+colDrug_MACCS_patient_BM = pd.read_csv("./Data/BM/colDrug_MACCS_input_BM.csv", sep = ",")
+colDrug_Sig_patient_BM = pd.read_csv("./Data/BM/colDrug_Sig_input_BM.csv", sep = ",")
+CellExp_patient_BM = pd.read_csv("./Data/BM/cellExp_ssGSEA_input_BM_1221.csv", sep = ",")
+HSA_label_patient_BM = pd.read_csv("./Data/BM/HSA_label_BM.csv", sep = ",")
 input__patient_BM=pd.concat([rowDrug_MACCS_patient_BM,rowDrug_Sig_patient_BM,colDrug_MACCS_patient_BM,colDrug_Sig_patient_BM,CellExp_patient_BM,HSA_label_patient_BM],axis=1,join="inner") 
 input_patient_BM_final=input__patient_BM.drop(labels = ['drug_row',"block_id","drug_col"], axis=1)
 new_data_patient_BM=input_patient_BM_final
@@ -575,14 +575,61 @@ for n_samples in samples:
         corr_coeffs[model] = []
         mse_scores[model] = []
         pearson_coeffs[model] = []
+### Plot the average correlation coefficients for BM
+plt.figure()
+for model, scores in avg_corr_coeffs.items():
+    if '_BM' in model:
+        x = list(scores.keys())
+        y = list(scores.values())
+        plt.plot(x, y, label=model)
 
+plt.xlabel('Number of samples')
+plt.ylabel('Average Correlation Coefficient (BM)')
+plt.legend()
+
+# Save the plot as a high-quality PDF
+plt.savefig('avg_corr_coeff_plot_BM_5times_blood_try.pdf', dpi=900, format='pdf')
+plt.show()
+
+# Plot the average correlation coefficients for PB
+plt.figure()
+for model, scores in avg_corr_coeffs.items():
+    if '_PB' in model:
+        x = list(scores.keys())
+        y = list(scores.values())
+        plt.plot(x, y, label=model)
+
+plt.xlabel('Number of samples')
+plt.ylabel('Average Correlation Coefficient (PB)')
+plt.legend()
+
+# Save the plot as a high-quality PDF
+plt.savefig('avg_corr_coeff_plot_PB_5times_blood_try.pdf', dpi=900, format='pdf')
+plt.show()
+###save the model--based on 50 samples
 DANN.save("DANN_50_samples_AML.keras")
+####save the summary files
+def write_all_results_to_csv(file_name, results_dict):
+    with open(file_name, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        header = ['n_samples'] + list(results_dict.keys())
+        csv_writer.writerow(header)
 
+        for n_samples in results_dict[next(iter(results_dict))].keys():
+            for i, scores in enumerate(zip(*[results_dict[model][n_samples] for model in results_dict])):
+                row = [n_samples] + list(scores)
+                csv_writer.writerow(row)
+
+# Write all R2 scores, correlation coefficients, and MSEs to separate CSV files
+write_all_results_to_csv('all_r2_scores_5times_AML_blood.csv', all_r2_scores)
+write_all_results_to_csv('all_corr_coeffs_5times_AML_blood.csv', all_corr_coeffs)
+write_all_results_to_csv('all_mse_scores_5times_AML_blood.csv', all_mse_scores)
+write_all_results_to_csv('all_pearson_coeffs_5times_AML_blood.csv', all_pearson_coeffs)
 
 
 ####Error Predictin Model
 
-test_data = pd.read_csv('BM_test_remaining_samples.csv')
+test_data = pd.read_csv('./Data/BM/BM_test_remaining_samples.csv')
 
 # =========================
 from tensorflow.keras.models import load_model

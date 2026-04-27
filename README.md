@@ -8,22 +8,23 @@ All training and test datasets for DANN model and error precition model are publ
 👉 https://zenodo.org/records/19749487
 
 The dataset includes:
-- Gene expression profiles (ssGSEA features, including BM AML and PB patietns, and CLL patients)
-- Drug features (LINCS L1000 + chemical fingerprints)
-- Synergy score (HSA synerygy score including BM, PB and CLL)
+- Patient-level gene expression features, represented as ssGSEA pathway scpres for AML bone marrow (BM)，AML peripheral blood (PB), and CLL PB samples
+- Drug-level features, including LINCS L1000 transcriptional signatures and chemical fingerprints
+- Drug combination synergy laabels, including HSA synergy scores for AML BM, AML PB, and CLL samples
 
-For the raw data used on this study are avaiable from the following resources:
-- Patient drug combination data (AML & CLL): AML_CLL_patient_RNA-seq_data_source    
+The original data sources used on this study are listed below: 
 
-- **Patient RNA-seq data (AML & CLL)** 
-  Obtained from previously published studies: AML_CLL_patient_RNA-seq_data_source  
+- **Patient drug combination screening data for AML and CLL** 
+  Source information and data links are provided in:
+  https://github.com/Jiezhu1995/Domain-adversarial-learning-predicts-clinically-actionable-drug-combination-synergy/tree/main/AML_CLL_patient_RNA-seq_data_source
 
 - **Cell line transcriptomic responses (LINCS L1000)**
-  LINCS_cell_line_transcriptomic_responses_source  
+ Source information is provided in:  
+  https://github.com/Jiezhu1995/Domain-adversarial-learning-predicts-clinically-actionable-drug-combination-synergy/tree/main/LINCS_cell_line_transcriptomic_responses_source  
 
 - **Cell line drug combination data (DrugComb)** 
-  Cell_line_drug_combination_data_source
-
+  Source information is provided in:  
+  https://github.com/Jiezhu1995/Domain-adversarial-learning-predicts-clinically-actionable-drug-combination-synergy/tree/main/Cell_line_drug_combination_data_source  
 
 ## Usage
 
@@ -31,22 +32,25 @@ For the raw data used on this study are avaiable from the following resources:
 Download data from Zenodo:
 https://zenodo.org/records/19749487
 
-Unzip and place the data into the following directory structure:
+After downloading, place the files into the following directory structure:
 data/
-├── Cell_line/
+├── Cell line/
 ├── BM/
 ├── PB/
 ├── CLL/
-
+Please ensure taht the file paths in the Python script match your local directory structure before running the code.
 ### 2. Model training
-Run the following scripts to train the DANN model and the error prediction model:
+To train the DANN model and the corresponding error prediction model, run:
 
-python Beat_DANN_error_prediction_model.py   # for AML (BeatAML dataset), including the DANN model and error prediction model
-python CLL_DANN_error_prediction_model.py    # for CLL dataset, inclduing the DANN model and error prediction model
+python Beat_DANN_error_prediction_model.py
+for the AML BeatAML dataset, and:
 
-### 3. Ablation study
-To perform ablation analysis, run: python Ablation.py
+python CLL_DANN_error_prediction_model.py
+for the CLL dataset.
+These scripts include model training, domain-adversarial adaptation, plotting, and error prediction.
 
-## ⚠️ Attention 
-Please ensure that all file paths specified in the `.py` scripts match your local directory structure.
-Failure to correctly set file paths may result in file-not-found errors or incorrect data loading.
+### 3. Ablation analysis
+To perform ablation analysis, run:
+python Ablation.py
+This script evaluates the contribution of domain-adversarial learning by comparing the full DANN model with reduced model variants.
+

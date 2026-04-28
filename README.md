@@ -3,14 +3,14 @@ This repository contains the implementation and data for a Domain-Adversarial Ne
 
 ## Data Availability
 
-All training and test datasets for DANN model and error precition model are publicly available on Zenodo:
+All training and test datasets for DANN model and error prediction model are publicly available on Zenodo:
 
 👉 https://zenodo.org/records/19749487
 
 The dataset includes:
-- Patient-level gene expression features, represented as ssGSEA pathway scpres for AML bone marrow (BM)，AML peripheral blood (PB), and CLL PB samples
+- Patient-level gene expression features, represented as ssGSEA pathway scores for AML bone marrow (BM)，AML peripheral blood (PB), and CLL PB samples
 - Drug-level features, including LINCS L1000 transcriptional signatures and chemical fingerprints
-- Drug combination synergy laabels, including HSA synergy scores for AML BM, AML PB, and CLL samples
+- Drug combination synergy labels, including HSA synergy scores for AML BM, AML PB, and CLL samples
 
 The original data sources used on this study are listed below: 
 

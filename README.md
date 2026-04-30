@@ -40,16 +40,20 @@ data/
 ├── CLL/
 Please ensure taht the file paths in the Python script match your local directory structure before running the code.
 ### 2. Model training
-To train the DANN model and the corresponding error prediction model, run:
+To train the DANN model, run:
 
-python Beat_DANN_error_prediction_model.py
+python Beat_DANN_model.py
 for the AML BeatAML dataset, and:
 
-python CLL_DANN_error_prediction_model.py
+python CLL_DANN_model.py
 for the CLL dataset.
-These scripts include model training, domain-adversarial adaptation, plotting, and error prediction.
+These scripts include model training, domain-adversarial adaptation and plotting.
+### 3. Error prediction model
+To obtain the error prediction model, run:
+python Error_prediction_model.py
+for the AML BeatAML dataset and CLL dataset.
 
-### 3. Ablation analysis
+### 4. Ablation analysis
 To perform ablation analysis, run:
 python Ablation.py
 This script evaluates the contribution of domain-adversarial learning by comparing the full DANN model with reduced model variants.

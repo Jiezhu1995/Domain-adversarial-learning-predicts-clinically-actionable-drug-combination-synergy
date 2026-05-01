@@ -65,12 +65,12 @@ X_test_scaled = scaler.transform(X_test)
 # In[5]:
 
 
-rowDrug_MACCS_patient_PB = pd.read_csv("/Users/sujie/Desktop/project2/BeatAML/input_PB/rowDrug_MACCS_input_PB.csv", sep = ",")
-rowDrug_Sig_patient_PB = pd.read_csv("/Users/sujie/Desktop/project2/BeatAML/input_PB/rowDrug_Sig_input_PB.csv", sep = ",")
-colDrug_MACCS_patient_PB = pd.read_csv("/Users/sujie/Desktop/project2/BeatAML/input_PB/colDrug_MACCS_input_PB.csv", sep = ",")
-colDrug_Sig_patient_PB = pd.read_csv("/Users/sujie/Desktop/project2/BeatAML/input_PB/colDrug_Sig_input_PB.csv", sep = ",")
-CellExp_patient_PB = pd.read_csv("/Users/sujie/Desktop/project2/BeatAML/input_PB/cellExp_ssGSEA_input_PB_1221.csv", sep = ",")
-HSA_label_patient_PB = pd.read_csv("/Users/sujie/Desktop/project2/BeatAML/input_PB/HSA_label_PB.csv", sep = ",")
+rowDrug_MACCS_patient_PB = pd.read_csv("rowDrug_MACCS_input_PB.csv", sep = ",")
+rowDrug_Sig_patient_PB = pd.read_csv("rowDrug_Sig_input_PB.csv", sep = ",")
+colDrug_MACCS_patient_PB = pd.read_csv("colDrug_MACCS_input_PB.csv", sep = ",")
+colDrug_Sig_patient_PB = pd.read_csv("colDrug_Sig_input_PB.csv", sep = ",")
+CellExp_patient_PB = pd.read_csv("cellExp_ssGSEA_input_PB_1221.csv", sep = ",")
+HSA_label_patient_PB = pd.read_csv("input_PB/HSA_label_PB.csv", sep = ",")
 
 
 # In[6]:
@@ -87,8 +87,6 @@ y_patient_PB = new_data_patient_PB.synergy_hsa.astype(float)
 # In[7]:
 
 
-# Fit scaler to training data and transform it
-#X_patient_BM_scaled = scaler.transform(X_patient_BM)
 # Fit scaler to training data and transform it
 X_patient_PB_scaled = scaler.transform(X_patient_PB)
 X_test_PB = X_patient_PB_scaled
@@ -118,8 +116,8 @@ from tensorflow.keras.models import load_model
 import tensorflow as tf
 
 class GradientReversalLayer(tf.keras.layers.Layer):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def call(self, inputs):
         return self.grad_reverse(inputs)
@@ -132,6 +130,9 @@ class GradientReversalLayer(tf.keras.layers.Layer):
             return -dy
 
         return y, custom_grad
+
+    def get_config(self):
+        return super().get_config()
 
 
 DANN = load_model(

@@ -36,13 +36,13 @@ data/
 ├── patient/
 │   ├── AML/
 │   │   ├── rna_seq.csv
-│   │   └── drug_response.csv
+│   │   └── drug_combination.csv
 │   ├── CLL/
 │   │   ├── rna_seq.csv
-│   │   └── drug_response.csv
+│   │   └── drug_combination.csv
 │
 ├── cell_line/
-│   ├── drug_response.csv
+│   ├── drug_combination.csv
 │   └── maccs_fingerprint.csv
 │
 ├── L1000/

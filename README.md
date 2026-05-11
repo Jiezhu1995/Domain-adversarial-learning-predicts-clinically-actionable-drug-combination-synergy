@@ -128,7 +128,27 @@ python scripts/Ablation.py
 This evaluates the contribution of domain-adversarial learning by comparing the full DANN model with reduced variants.
 
 ---
+## Environment
 
+The code was tested with:
+
+```text
+Python 3.10.18
+
+numpy==1.24.4
+pandas==2.3.3
+scikit-optimize==0.10.2
+matplotlib==3.10.1
+joblib==1.5.2
+tensorflow==2.15.0
+h5py==3.15.1
+scikit-learn==1.3.2
+xgboost==3.1.2
+scipy==1.10.1
+keras==2.15.0
+concrete-autoencoder==0.0.1
+```
+---
 ## Notes
 
 * Ensure consistent preprocessing between training and test datasets

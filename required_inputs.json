@@ -1,0 +1,63 @@
+{
+  "Ablation.py": [
+    "HSA_label_BM.csv",
+    "HSA_label_PB.csv",
+    "cellExp_ssGSEA_input_BM_1221.csv",
+    "cellExp_ssGSEA_input_PB_1221.csv",
+    "cell_line_model_based on blood_less neuron.h5",
+    "colDrug_MACCS_input_BM.csv",
+    "colDrug_MACCS_input_PB.csv",
+    "colDrug_Sig_input_BM.csv",
+    "colDrug_Sig_input_PB.csv",
+    "rowDrug_MACCS_input_BM.csv",
+    "rowDrug_MACCS_input_PB.csv",
+    "rowDrug_Sig_input_BM.csv",
+    "rowDrug_Sig_input_PB.csv",
+    "test_data_blood.h5",
+    "training_data_blood.h5"
+  ],
+  "CLL_DANN_model.py": [
+    "HSA_label.csv",
+    "cellExp_input.csv",
+    "cell_line_model_based on blood_less neuron.h5",
+    "colDrug_MACCS_input.csv",
+    "colDrug_Sig_input.csv",
+    "rowDrug_MACCS_input.csv",
+    "rowDrug_Sig_input.csv",
+    "test_another.csv",
+    "test_data_blood.h5",
+    "training_20.csv",
+    "training_data_blood.h5"
+  ],
+  "BeatAML_DANN_model.py": [
+    "HSA_label_BM.csv",
+    "HSA_label_PB.csv",
+    "cellExp_ssGSEA_input_BM_1221.csv",
+    "cellExp_ssGSEA_input_PB_1221.csv",
+    "cell_line_model_based on blood_less neuron.h5",
+    "colDrug_MACCS_input_BM.csv",
+    "colDrug_MACCS_input_PB.csv",
+    "colDrug_Sig_input_BM.csv",
+    "colDrug_Sig_input_PB.csv",
+    "rowDrug_MACCS_input_BM.csv",
+    "rowDrug_MACCS_input_PB.csv",
+    "rowDrug_Sig_input_BM.csv",
+    "rowDrug_Sig_input_PB.csv",
+    "test_data_blood.h5",
+    "training_data_blood.h5"
+  ],
+  "Error_prediction_model.py": [
+    "BM_test_remaining_samples.csv",
+    "CLL_test_remaining_samples.csv",
+    "DANN_50_samples_AML.keras",
+    "DANN_50_samples_CLL.keras",
+    "HSA_label_PB.csv",
+    "cellExp_ssGSEA_input_PB_1221.csv",
+    "colDrug_MACCS_input_PB.csv",
+    "colDrug_Sig_input_PB.csv",
+    "rowDrug_MACCS_input_PB.csv",
+    "rowDrug_Sig_input_PB.csv",
+    "test_data_blood.h5",
+    "training_data_blood.h5"
+  ]
+}

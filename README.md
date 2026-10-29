@@ -50,6 +50,12 @@ data/
 │   └── zscore_1006gene.csv
 
 scripts/
+├── BeatAML_DANN_model.py
+├── CLL_DANN_model.py
+├── Ablation.py
+├── Error_prediction_model.py
+└── data_paths.py
+required_inputs.json
 ```
 
 ---
@@ -81,9 +87,17 @@ The datasets used in this study are organized in the `data/` directory as follow
 
 ### 1. Data Preparation
 
-Download the dataset from Zenodo and place the files into the corresponding directories under `data/`.
+Download and extract the processed model inputs from Zenodo into `data/` beside this README. The source tables listed above are distinct from the processed matrices and saved models required by the scripts. See [required_inputs.json](required_inputs.json) for the exact filenames required by each entry point; preserve filenames when extracting archives.
 
-Ensure that file paths in the scripts match your local directory structure before execution.
+The scripts resolve inputs relative to the repository's `data/` directory, independently of the working directory. Flat and nested layouts are supported. To use an existing data directory, set:
+
+```bash
+export DANN_DATA_DIR="/absolute/path/to/processed_inputs"
+```
+
+Keep one authoritative copy of each required filename under that directory. Missing files and duplicate filenames raise explicit errors; no script path edits are needed. The default directory is `data/` (lowercase).
+
+Run the commands below from the repository root. Outputs retain their original filenames and are written relative to the working directory; use a separate output directory and an absolute script path to preserve earlier results.
 
 ---
 
@@ -92,7 +106,7 @@ Ensure that file paths in the scripts match your local directory structure befor
 For AML (BeatAML dataset):
 
 ```bash
-python scripts/Beat_DANN_model.py
+python scripts/BeatAML_DANN_model.py
 ```
 
 For CLL dataset:
@@ -149,6 +163,12 @@ keras==2.15.0
 concrete-autoencoder==0.0.1
 ```
 ---
+## Code maintenance validation
+
+The Chinese comments in the public Python scripts have been translated into English, and the AML entry point is consistently named `BeatAML_DANN_model.py`. Model definitions, training settings, random seeds, and statistical calculations are unchanged by these maintenance edits.
+
+Syntax checks, comparison of executable operations apart from input-path resolution, and path-resolution checks have been performed. These checks do not constitute a full training or end-to-end reproduction run.
+
 ## Notes
 
 * Ensure consistent preprocessing between training and test datasets

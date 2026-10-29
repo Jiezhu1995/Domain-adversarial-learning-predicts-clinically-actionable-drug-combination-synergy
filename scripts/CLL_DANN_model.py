@@ -1,3 +1,4 @@
+from data_paths import data_path
 #!/usr/bin/env python
 # coding: utf-8
 
@@ -36,15 +37,15 @@ from keras.layers import Dense, Dropout, LeakyReLU, Softmax
 from tensorflow.keras.models import load_model
 
 # Load the saved patient model
-cell_line_model = load_model('/data/Cell line/cell_line_model_based on blood_less neuron.h5')
+cell_line_model = load_model(data_path('cell_line_model_based on blood_less neuron.h5'))
 
 # Load training data
-with h5py.File('/data/Cell line/training_data_blood.h5', 'r') as f:
+with h5py.File(data_path('training_data_blood.h5'), 'r') as f:
     X_train = f['X_train'][:]
     y_train = f['y_train'][:]
 
 # Load test data
-with h5py.File('/data/Cell line/test_data_blood.h5', 'r') as f:
+with h5py.File(data_path('test_data_blood.h5'), 'r') as f:
     X_test = f['X_test'][:]
     y_test = f['y_test'][:]
 
@@ -55,12 +56,12 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 print (X_train_scaled.shape[1])
-rowDrug_MACCS_patient_CLL = pd.read_csv("/data/CLL/rowDrug_MACCS_input.csv", sep = ",")
-rowDrug_Sig_patient_CLL = pd.read_csv("/data/CLL/rowDrug_Sig_input.csv", sep = ",")
-colDrug_MACCS_patient_CLL = pd.read_csv("/data/CLL/colDrug_MACCS_input.csv", sep = ",")
-colDrug_Sig_patient_CLL = pd.read_csv("/data/CLL/colDrug_Sig_input.csv", sep = ",")
-CellExp_patient_CLL = pd.read_csv("/data/CLL/cellExp_input.csv", sep = ",")
-HSA_label_patient_CLL = pd.read_csv("/data/CLL/HSA_label.csv", sep = ",")
+rowDrug_MACCS_patient_CLL = pd.read_csv(data_path('rowDrug_MACCS_input.csv'), sep = ",")
+rowDrug_Sig_patient_CLL = pd.read_csv(data_path('rowDrug_Sig_input.csv'), sep = ",")
+colDrug_MACCS_patient_CLL = pd.read_csv(data_path('colDrug_MACCS_input.csv'), sep = ",")
+colDrug_Sig_patient_CLL = pd.read_csv(data_path('colDrug_Sig_input.csv'), sep = ",")
+CellExp_patient_CLL = pd.read_csv(data_path('cellExp_input.csv'), sep = ",")
+HSA_label_patient_CLL = pd.read_csv(data_path('HSA_label.csv'), sep = ",")
 
 input__patient_CLL=pd.concat([rowDrug_MACCS_patient_CLL,rowDrug_Sig_patient_CLL,colDrug_MACCS_patient_CLL,colDrug_Sig_patient_CLL,CellExp_patient_CLL,HSA_label_patient_CLL],axis=1,join="inner") 
 input_patient_CLL_final=input__patient_CLL.drop(labels = ['drug_row',"block_id","drug_col"], axis=1)
@@ -151,7 +152,7 @@ def build_and_compile_model():
     model.compile(
         optimizer=Adam(learning_rate=0.0005),
         loss=['mean_squared_error', 'binary_crossentropy'],
-        loss_weights=[1.0, 0.0]   # 初始时 domain loss 权重 = 0
+        loss_weights=[1.0, 0.0]   # Initialize the domain-loss weight to zero.
     )
     return model
 
@@ -171,11 +172,11 @@ class DomainWeightScheduler(Callback):
         self.n_epochs = n_epochs
 
     def on_epoch_begin(self, epoch, logs=None):
-        # p 从 0 到 1 逐渐变化
+        # Increase p gradually from zero to one.
         p = epoch / float(self.n_epochs)
-        # DANN 论文里常用的 lambda 调度公式
+        # Lambda schedule commonly used in DANN.
         lam = self.max_lambda * (2. / (1. + np.exp(-10 * p)) - 1)
-        # 动态修改模型的 loss_weights： [task_loss_weight, domain_loss_weight]
+        # Update loss weights: [task_loss_weight, domain_loss_weight].
         self.model.loss_weights = [1.0, lam]
 
 samples = [1,2, 3, 4, 5, 6, 7, 8, 9, 10,12,14,16,18,20,30,40,50]
@@ -209,13 +210,13 @@ unique_combinations = {}
 id_col = "SampleID"
 label_col = "HSA_score"
 
-train_data = pd.read_csv("./Data/CLL/training_20.csv")
-test_data  = pd.read_csv("./Data/CLL/test_another.csv")
+train_data = pd.read_csv(data_path('training_20.csv'))
+test_data  = pd.read_csv(data_path('test_another.csv'))
 
-# 合并成一个总表（所有样本）
+# Combine both tables into one table containing all samples.
 all_data = pd.concat([train_data, test_data], ignore_index=True)
 
-# 所有可抽样的 SampleID
+# All sample IDs available for sampling.
 all_sample_ids = all_data[id_col].unique()
 
 print("Total unique samples:", len(all_sample_ids))
@@ -356,11 +357,11 @@ for n_samples in samples:
     
         n_train_samples = X_patient_BM_scaled.shape[0]
         # Train and evaluate the KNN
-        # 动态决定 n_neighbors，最多 10，且必须 <= 训练样本数
+        # Choose at most 10 neighbors, without exceeding the training row count.
         if n_train_samples >= 2:
             n_neighbors = min(10, n_train_samples - 1)
         else:
-        # 只有 1 个样本的极端情况，KNN 退化成 n_neighbors=1
+        # For a single training row, use one neighbor.
             n_neighbors = 1
         knn = KNeighborsRegressor(n_neighbors = n_neighbors)
         knn.fit(X_patient_BM_scaled, y)                                                                                                                                

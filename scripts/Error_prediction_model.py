@@ -1,3 +1,4 @@
+from data_paths import data_path
 #!/usr/bin/env python
 # coding: utf-8
 
@@ -41,12 +42,12 @@ from keras.layers import Dense, Dropout, LeakyReLU, Softmax
 
 
 # Load training data
-with h5py.File('/Users/sujie/Desktop/project2/BeatAML/training_data_blood.h5', 'r') as f:
+with h5py.File(data_path('training_data_blood.h5'), 'r') as f:
     X_train = f['X_train'][:]
     y_train = f['y_train'][:]
 
 # Load test data
-with h5py.File('/Users/sujie/Desktop/project2/BeatAML/test_data_blood.h5', 'r') as f:
+with h5py.File(data_path('test_data_blood.h5'), 'r') as f:
     X_test = f['X_test'][:]
     y_test = f['y_test'][:]
 
@@ -65,12 +66,12 @@ X_test_scaled = scaler.transform(X_test)
 # In[5]:
 
 
-rowDrug_MACCS_patient_PB = pd.read_csv("rowDrug_MACCS_input_PB.csv", sep = ",")
-rowDrug_Sig_patient_PB = pd.read_csv("rowDrug_Sig_input_PB.csv", sep = ",")
-colDrug_MACCS_patient_PB = pd.read_csv("colDrug_MACCS_input_PB.csv", sep = ",")
-colDrug_Sig_patient_PB = pd.read_csv("colDrug_Sig_input_PB.csv", sep = ",")
-CellExp_patient_PB = pd.read_csv("cellExp_ssGSEA_input_PB_1221.csv", sep = ",")
-HSA_label_patient_PB = pd.read_csv("input_PB/HSA_label_PB.csv", sep = ",")
+rowDrug_MACCS_patient_PB = pd.read_csv(data_path('rowDrug_MACCS_input_PB.csv'), sep = ",")
+rowDrug_Sig_patient_PB = pd.read_csv(data_path('rowDrug_Sig_input_PB.csv'), sep = ",")
+colDrug_MACCS_patient_PB = pd.read_csv(data_path('colDrug_MACCS_input_PB.csv'), sep = ",")
+colDrug_Sig_patient_PB = pd.read_csv(data_path('colDrug_Sig_input_PB.csv'), sep = ",")
+CellExp_patient_PB = pd.read_csv(data_path('cellExp_ssGSEA_input_PB_1221.csv'), sep = ",")
+HSA_label_patient_PB = pd.read_csv(data_path('HSA_label_PB.csv'), sep = ",")
 
 
 # In[6]:
@@ -104,7 +105,7 @@ print (X_train_scaled.shape[1])
 # In[60]:
 
 
-test_data = pd.read_csv('BM_test_remaining_samples.csv')
+test_data = pd.read_csv(data_path('BM_test_remaining_samples.csv'))
 
 
 # In[58]:
@@ -136,7 +137,7 @@ class GradientReversalLayer(tf.keras.layers.Layer):
 
 
 DANN = load_model(
-    "DANN_50_samples_AML.keras",
+    data_path('DANN_50_samples_AML.keras'),
     custom_objects={"GradientReversalLayer": GradientReversalLayer}
 )
 
@@ -1056,7 +1057,7 @@ print(summary)
 # In[51]:
 
 
-test_data = pd.read_csv('CLL_test_remaining_samples.csv')
+test_data = pd.read_csv(data_path('CLL_test_remaining_samples.csv'))
 
 
 # In[52]:
@@ -1085,7 +1086,7 @@ class GradientReversalLayer(tf.keras.layers.Layer):
 
 
 DANN = load_model(
-    "DANN_50_samples_CLL.keras",
+    data_path('DANN_50_samples_CLL.keras'),
     custom_objects={"GradientReversalLayer": GradientReversalLayer}
 )
 

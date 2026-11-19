@@ -437,6 +437,68 @@ def _wilcoxon_by_kept_ratio(df, col_kept, col_raw, alternative="two-sided"):
     return out
 
 
+def _bh_adjust_planned_family(p_values):
+    """Benjamini-Hochberg correction, retaining unestimable planned tests."""
+    p = np.asarray(p_values, dtype=float)
+    if p.ndim != 1:
+        raise ValueError("p-values must be one-dimensional")
+    if np.any(np.isfinite(p) & ((p < 0) | (p > 1))):
+        raise ValueError("p-values must be between zero and one")
+    if p.size == 0:
+        return p.copy()
+    valid = np.isfinite(p)
+    # Missing tests keep their family slot but are reported as NaN.
+    work = np.where(valid, p, 1.0)
+    order = np.argsort(work, kind="stable")
+    adjusted_sorted = work[order] * p.size / np.arange(1, p.size + 1)
+    adjusted_sorted = np.minimum.accumulate(adjusted_sorted[::-1])[::-1]
+    adjusted = np.empty_like(work)
+    adjusted[order] = np.clip(adjusted_sorted, 0.0, 1.0)
+    adjusted[~valid] = np.nan
+    return adjusted
+
+
+def _adjust_p_values_bh(df, cohort, p_by_metric, out_prefix):
+    """Export raw/adjusted p-values and return adjusted maps for plot stars.
+
+    Apply BH separately within each cohort across all three metrics and
+    retained fractions below 100% (15 tests for the default 50-90% fractions).
+    The 100% identity control is excluded. Test alternatives remain unchanged:
+    two-sided for Pearson/Spearman and one-sided (less) for MSE.
+    Computational repeats reuse specimens; they are not biological replicates.
+    """
+    if df.duplicated(["rep", "kept_ratio_target"]).any():
+        raise ValueError("Each repeat/kept-ratio pair must have exactly one row")
+    rows = []
+    for metric, p_values in p_by_metric.items():
+        for ratio, group in df.groupby("kept_ratio_target"):
+            paired = group[[f"{metric}_kept", f"{metric}_raw"]].notna().all(axis=1)
+            rows.append({
+                "cohort": cohort,
+                "metric": metric,
+                "kept_ratio_target": ratio,
+                "target_kept_percent": ratio * 100,
+                "n_valid_paired_computational_repeats": int(paired.sum()),
+                "raw_p_value": p_values[ratio],
+                "adjusted_p_value": np.nan,
+                "test_alternative": "less" if metric == "mse" else "two-sided",
+                "included_in_BH_family": not np.isclose(ratio, 1.0),
+            })
+    table = pd.DataFrame(rows)
+    selected = table["included_in_BH_family"]
+    table["BH_family_size"] = int(selected.sum())
+    table.loc[selected, "adjusted_p_value"] = _bh_adjust_planned_family(
+        table.loc[selected, "raw_p_value"]
+    )
+    table.to_csv(
+        f"{out_prefix}_{cohort}_p_values_BH.csv", index=False, float_format="%.17g"
+    )
+    return {
+        metric: group.set_index("kept_ratio_target")["adjusted_p_value"].to_dict()
+        for metric, group in table.groupby("metric")
+    }
+
+
 ###plot
 # set Arial font globally
 plt.rcParams["font.family"] = "Arial"
@@ -468,10 +530,16 @@ def plot_bars_with_kept_ratio_line(df, out_prefix="mondrian_bar"):
     x = np.arange(len(labels))
     width = 0.38
 
-    # p-values
+    # Raw p-values (original paired tests)
     p_sp  = _wilcoxon_by_kept_ratio(df, "spearman_kept", "spearman_raw", alternative="two-sided")
     p_pe  = _wilcoxon_by_kept_ratio(df, "pearson_kept",  "pearson_raw",  alternative="two-sided")
     p_mse = _wilcoxon_by_kept_ratio(df, "mse_kept", "mse_raw", alternative="less")
+    # Stars use BH-adjusted p-values; export both raw and adjusted values.
+    p_bh = _adjust_p_values_bh(
+        df, "AML_BM",
+        {"pearson": p_pe, "spearman": p_sp, "mse": p_mse}, out_prefix
+    )
+    p_pe, p_sp, p_mse = p_bh["pearson"], p_bh["spearman"], p_bh["mse"]
 
     # colors
     COLOR_KEPT_FILL = "#C7DFFD"
@@ -928,10 +996,16 @@ def plot_bars_with_kept_ratio_line(df, out_prefix="mondrian_bar"):
     x = np.arange(len(labels))
     width = 0.38
 
-    # p-values
+    # Raw p-values (original paired tests)
     p_sp  = _wilcoxon_by_kept_ratio(df, "spearman_kept", "spearman_raw", alternative="two-sided")
     p_pe  = _wilcoxon_by_kept_ratio(df, "pearson_kept",  "pearson_raw",  alternative="two-sided")
     p_mse = _wilcoxon_by_kept_ratio(df, "mse_kept", "mse_raw", alternative="less")
+    # Stars use BH-adjusted p-values; export both raw and adjusted values.
+    p_bh = _adjust_p_values_bh(
+        df, "AML_PB",
+        {"pearson": p_pe, "spearman": p_sp, "mse": p_mse}, out_prefix
+    )
+    p_pe, p_sp, p_mse = p_bh["pearson"], p_bh["spearman"], p_bh["mse"]
 
     # colors
     COLOR_KEPT_FILL = "#C7DFFD"
@@ -1418,10 +1492,16 @@ def plot_bars_with_kept_ratio_line(df, out_prefix="mondrian_bar"):
     x = np.arange(len(labels))
     width = 0.38
 
-    # p-values
+    # Raw p-values (original paired tests)
     p_sp  = _wilcoxon_by_kept_ratio(df, "spearman_kept", "spearman_raw", alternative="two-sided")
     p_pe  = _wilcoxon_by_kept_ratio(df, "pearson_kept",  "pearson_raw",  alternative="two-sided")
     p_mse = _wilcoxon_by_kept_ratio(df, "mse_kept", "mse_raw", alternative="less")
+    # Stars use BH-adjusted p-values; export both raw and adjusted values.
+    p_bh = _adjust_p_values_bh(
+        df, "CLL",
+        {"pearson": p_pe, "spearman": p_sp, "mse": p_mse}, out_prefix
+    )
+    p_pe, p_sp, p_mse = p_bh["pearson"], p_bh["spearman"], p_bh["mse"]
 
     # colors
     COLOR_KEPT_FILL = "#C7DFFD"

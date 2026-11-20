@@ -26,7 +26,7 @@ The associated manuscript reports improved predictive performance relative to RF
 
 ## Limitations
 
-Performance depends on cohort composition, training size and experimental conditions. The evaluated cohorts are modest, and applicability beyond AML/CLL, two-drug small-molecule combinations or the represented assay settings requires further evaluation. Predicted synergy is distinct from absolute drug activity or clinical benefit. The error model supports ranking predictions by estimated reliability but does not provide calibrated probability guarantees. Prospective clinical utility and mechanistic interpretation remain to be established.
+Performance depends on cohort composition, training size and experimental conditions. The evaluated cohorts are modest, and applicability beyond AML/CLL, two-drug small-molecule combinations or the represented assay settings requires further evaluation. Predicted synergy is distinct from absolute drug activity or clinical benefit. The error model supports ranking predictions by estimated reliability but does not provide calibrated probability guarantees.
 
 ## Access and reproducibility
 

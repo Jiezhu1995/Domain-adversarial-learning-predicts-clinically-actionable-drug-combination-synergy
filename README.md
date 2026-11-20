@@ -2,6 +2,8 @@
 
 This repository provides the implementation and data resources for a Domain-Adversarial Neural Network (DANN) framework designed to predict drug combination synergy in primary leukemia samples.
 
+See the [Model Card](MODEL_CARD.md) for the model's intended use, training data, evaluation and limitations.
+
 ---
 
 ## Data Availability
